@@ -5,11 +5,15 @@ const mongoose = require('mongoose');
 const User = require('../models/user');
 
 router.get('/', (req, res, next) => {
-    User.findById()
+    User.find()
+    .select('username password _id')
     .exec()
     .then(docs => {
-        console.log(docs);
-        res.status(200).json(docs);
+        const response = {
+            count: docs.length,
+            users: docs
+        }
+        res.status(200).json(response);
     })
     .catch(err => {
         console.log(err);
@@ -45,6 +49,7 @@ router.post('/', (req, res, next) => {
 router.get('/:userId', (req, res, next) => {
     const id = req.params.userId;
     User.findById(id)
+    .select('username password _id')
     .exec()
     .then(doc => {
         console.log("From database", doc);
